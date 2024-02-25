@@ -18,7 +18,7 @@ const boundingClientRect = (
         let timer;
         if (timeout) {
             timer = setTimeout(() => {
-                reject(new Error('timeout'));
+                reject(new Error(`boundingClientRect {${selector}} timeout`));
             }, timeout);
         }
         const fire = () => {
@@ -35,7 +35,7 @@ const boundingClientRect = (
                         }
                         if (!retryCount) {
                             clearTimeout(timer);
-                            reject(new Error('not result'));
+                            reject(new Error(`boundingClientRect {${selector}} not result`));
                             return;
                         }
                         retryCount--;
