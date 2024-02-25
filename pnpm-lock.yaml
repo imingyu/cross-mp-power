@@ -26,9 +26,6 @@ devDependencies:
   '@types/mocha':
     specifier: ^10.0.6
     version: 10.0.6
-  '@types/node':
-    specifier: ^20.4.2
-    version: 20.11.20
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.0.0
     version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.57.0)(typescript@5.3.3)

@@ -4,6 +4,9 @@ module.exports = {
     parserOptions: {
         project: './tsconfig-eslint.json'
     },
+    globals: {
+        global: 'readonly'
+    },
     rules: {
         indent: [
             'error',

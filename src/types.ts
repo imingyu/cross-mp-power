@@ -37,3 +37,7 @@ export interface CrossMpClientRect<T = any> {
     left: number;
     dataset: T;
 }
+
+export interface EventHandler {
+    (type: string, data?: any);
+}

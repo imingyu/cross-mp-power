@@ -6,4 +6,6 @@ export * from './ui';
 export * from './storage';
 export * from './component';
 export * from './xml';
+export * from './global';
+export * from './event-emitter';
 export type * from './types';
