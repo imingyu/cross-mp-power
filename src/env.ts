@@ -1,3 +1,4 @@
+import { memoize } from './_util';
 import type { CrossMpEnvInfo, CrossMpEnvVersion, CrossMpSystemInfo } from './types';
 import { getApiVar } from './var';
 
@@ -12,32 +13,27 @@ export const getSystemInfo = (() => {
 })();
 
 /** 检查当前是否开启了调试 */
-export const checkDebugEnabled = (() => {
-    let res: boolean | undefined;
-    return (): boolean => {
-        if (res !== undefined) {
-            return res;
+export const checkDebugEnabled = memoize((): boolean => {
+    let res;
+    if (BUILD_TARGET === 'wx') {
+        if ('getAppBaseInfo' in wx) {
+            res = wx.getAppBaseInfo()?.enableDebug;
         }
-        if (BUILD_TARGET === 'wx') {
-            if ('getAppBaseInfo' in wx) {
-                res = wx.getAppBaseInfo()?.enableDebug;
-            }
-            if (typeof res !== 'boolean') {
-                res = (getSystemInfo() as any).enableDebug;
-            }
-            if (typeof res !== 'boolean' && typeof __wxConfig === 'object') {
-                res = !!__wxConfig.debug;
-            }
-            return (res = res || false);
+        if (typeof res !== 'boolean') {
+            res = (getSystemInfo() as any).enableDebug;
         }
-        if (BUILD_TARGET === 'qq') {
-            return (res =
-                (typeof __wxConfig === 'object' && !!__wxConfig.debug) ||
-                (typeof __qqConfig === 'object' && !!__qqConfig.debug));
+        if (typeof res !== 'boolean' && typeof __wxConfig === 'object') {
+            res = !!__wxConfig.debug;
         }
-        return (res = false);
-    };
-})();
+        return (res = res || false);
+    }
+    if (BUILD_TARGET === 'qq') {
+        return (res =
+            (typeof __wxConfig === 'object' && !!__wxConfig.debug) ||
+            (typeof __qqConfig === 'object' && !!__qqConfig.debug));
+    }
+    return (res = false);
+});
 
 const getEnvInfo = (() => {
     let res: CrossMpEnvInfo | undefined;
@@ -117,32 +113,14 @@ const getEnvInfo = (() => {
  * release=发布环境版本;
  * ?=未知环境版本;
  */
-export const getCurrentEnvVersion = (() => {
-    let res: CrossMpEnvVersion | undefined;
-    return (): CrossMpEnvVersion => {
-        if (res !== undefined) {
-            return res;
-        }
-        return (res = getEnvInfo().envVersion);
-    };
-})();
+export const getCurrentEnvVersion = memoize((): CrossMpEnvVersion => {
+    return getEnvInfo().envVersion;
+});
 
-export const getCurrentAppId = (() => {
-    let res: string | undefined;
-    return (): string => {
-        if (res !== undefined) {
-            return res;
-        }
-        return (res = getEnvInfo().appId);
-    };
-})();
+export const getCurrentAppId = memoize((): string => {
+    return getEnvInfo().appId;
+});
 
-export const getCurrentAppVersion = (() => {
-    let res: string | undefined;
-    return (): string => {
-        if (res !== undefined) {
-            return res;
-        }
-        return (res = getEnvInfo().version);
-    };
-})();
+export const getCurrentAppVersion = memoize(() => {
+    return getEnvInfo().version;
+});

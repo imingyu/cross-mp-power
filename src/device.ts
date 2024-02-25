@@ -1,10 +1,19 @@
 import { showToast } from './ui';
-import { getApiVar } from './var';
+import { getApiVar, getApiVarName } from './var';
 
 export const setClipboardData = (data: string, showFailToast = true): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
-        getApiVar()[BUILD_TARGET === 'my' ? 'setClipboard' : 'setClipboardData']({
-            [BUILD_TARGET === 'my' ? 'text' : 'data']: data,
+        let name;
+        let key;
+        if (BUILD_TARGET === 'my') {
+            name = BUILD_TARGET === 'my' ? 'setClipboard' : 'setClipboardData';
+            key = BUILD_TARGET === 'my' ? 'text' : 'data';
+        } else {
+            name = getApiVarName() === 'my' ? 'setClipboard' : 'setClipboardData';
+            key = getApiVarName() === 'my' ? 'text' : 'data';
+        }
+        getApiVar()[name]({
+            [key]: data,
             success: () => {
                 resolve();
             },

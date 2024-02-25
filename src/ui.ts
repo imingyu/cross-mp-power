@@ -1,12 +1,12 @@
 import { promisifyApi } from './call';
 import type { AnyFunction } from './types';
-import { getApiVar } from './var';
+import { getApiVar, getApiVarName } from './var';
 
 export const showToast = (msg: string, duration = 2000) => {
     const config: any = {
         duration
     };
-    if (BUILD_TARGET === 'my') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
         config.content = msg;
         config.type = 'none';
     } else {
@@ -18,37 +18,21 @@ export const showToast = (msg: string, duration = 2000) => {
 
 export const showActionSheet = (items: string[], title?: string): Promise<number> => {
     const config: any = {};
-    if (
-        BUILD_TARGET === 'wx' ||
-        BUILD_TARGET === 'swan' ||
-        BUILD_TARGET === 'tt' ||
-        BUILD_TARGET === 'ks' ||
-        BUILD_TARGET === 'qq' ||
-        BUILD_TARGET === 'xhs'
-    ) {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
+        config.items = items;
+        config.title = title;
+    } else {
         config.itemList = items;
         config.alertText = title;
     }
-    if (BUILD_TARGET === 'my') {
-        config.items = items;
-        config.title = title;
-    }
     return promisifyApi('showActionSheet', config).then((res) => {
-        if (
-            BUILD_TARGET === 'wx' ||
-            BUILD_TARGET === 'swan' ||
-            BUILD_TARGET === 'tt' ||
-            BUILD_TARGET === 'ks' ||
-            BUILD_TARGET === 'qq' ||
-            BUILD_TARGET === 'xhs'
-        ) {
-            return res.tapIndex;
-        }
-        if (BUILD_TARGET === 'my') {
+        if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
             if (res.index === -1) {
                 return Promise.reject(new Error('已取消选择'));
             }
             return res.index;
+        } else {
+            return res.tapIndex;
         }
     });
 };

@@ -1,5 +1,6 @@
 import { promisifyApi } from './call';
 import type { CrossMpStorageInfo } from './types';
+import { getApiVarName } from './var';
 
 export const setStorage = (key: string, data: any): Promise<void> => {
     return promisifyApi('setStorage', {
@@ -26,9 +27,12 @@ export const clearStorage = (): Promise<void> => {
 
 export const getStorageInfo = (): Promise<CrossMpStorageInfo> => {
     return promisifyApi('getStorageInfo').then((res) => {
-        if (BUILD_TARGET === 'my' && (!res || ('success' in res && !res.success))) {
-            return Promise.reject(new Error('支付宝平台getStorageInfo返回值success=false'));
+        if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
+            if (!res || ('success' in res && !res.success)) {
+                return Promise.reject(new Error('支付宝平台getStorageInfo返回值success=false'));
+            }
         }
+
         return res;
     });
 };

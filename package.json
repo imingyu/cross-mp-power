@@ -1,6 +1,6 @@
 {
     "name": "cross-mp-power",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "跨平台小程序能力封装",
     "main": "esm/index.js",
     "module": "esm/index.js",
