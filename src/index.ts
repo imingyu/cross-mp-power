@@ -1,3 +1,4 @@
+export * from './_util';
 export * from './var';
 export * from './call';
 export * from './env';
@@ -8,4 +9,5 @@ export * from './component';
 export * from './xml';
 export * from './global';
 export * from './event-emitter';
+export * from './event-system';
 export type * from './types';

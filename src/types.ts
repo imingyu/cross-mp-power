@@ -41,3 +41,10 @@ export interface CrossMpClientRect<T = any> {
 export interface EventHandler {
     (type: string, data?: any);
 }
+
+export interface CrossEvent {
+    from: string;
+    target: string;
+    name: string;
+    data?: any;
+}

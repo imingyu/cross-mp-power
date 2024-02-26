@@ -18,8 +18,8 @@ export class EventEmitter {
         this.on(type, handler);
     }
 
-    destory() {
-        this.emit('destory');
+    destroy() {
+        this.emit('destroy');
         // eslint-disable-next-line guard-for-in
         for (const prop in this.events) {
             delete this.events[prop];

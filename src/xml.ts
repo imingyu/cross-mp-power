@@ -27,7 +27,9 @@ const boundingClientRect = (
                     .createSelectorQuery()
                     // eslint-disable-next-line no-unexpected-multiline
                     [mode](selector)
-                    .boundingClientRect((rect) => {
+                    .boundingClientRect()
+                    .exec((rect) => {
+                        rect = rect?.[0];
                         if (rect) {
                             clearTimeout(timer);
                             resolve(rect);
@@ -45,8 +47,7 @@ const boundingClientRect = (
                             return;
                         }
                         setTimeout(fire, retryDelay || 0);
-                    })
-                    .exec();
+                    });
             } catch (error) {
                 clearTimeout(timer);
                 reject(error);
