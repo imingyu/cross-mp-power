@@ -88,7 +88,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
 
     if (BUILD_TARGET === 'my') {
         if ('getAccountInfoSync' in my) {
-            res = my.getAccountInfoSync()?.miniProgram?.envVersion;
+            res = my.getAccountInfoSync()?.miniProgram;
         }
         if (!res && typeof __appxStartupParams === 'object') {
             return d({
@@ -102,7 +102,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
 
     const apiVar = getApiVar();
     if ('getAccountInfoSync' in apiVar) {
-        res = apiVar.getAccountInfoSync()?.miniProgram?.envVersion;
+        res = apiVar.getAccountInfoSync()?.miniProgram;
     }
     return d(res);
 });
