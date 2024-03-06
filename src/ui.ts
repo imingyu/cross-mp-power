@@ -26,14 +26,14 @@ export const showActionSheet = (items: string[], title?: string): Promise<number
         config.alertText = title;
     }
     return promisifyApi('showActionSheet', config).then((res) => {
+        let index = res.tapIndex;
         if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
-            if (res.index === -1) {
-                return Promise.reject(new Error('已取消选择'));
-            }
-            return res.index;
-        } else {
-            return res.tapIndex;
+            index = res.index;
         }
+        if (typeof index !== 'number' || index < 0) {
+            return Promise.reject(new Error('已取消选择'));
+        }
+        return index;
     });
 };
 
