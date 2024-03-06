@@ -48,3 +48,13 @@ export interface CrossEvent {
     name: string;
     data?: any;
 }
+
+export interface SelectBoundingClientRectConfig {
+    selector: string;
+    ctx?: any;
+    timeout?: number;
+    retryCount?: number;
+    retryDelay?: number;
+    /** 透传给createSelectorQuery */
+    createSelectorQueryConfig?: any;
+}

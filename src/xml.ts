@@ -1,15 +1,8 @@
-import type { CrossMpClientRect } from './types';
+import type { CrossMpClientRect, SelectBoundingClientRectConfig } from './types';
 import { getApiVar } from './var';
 
-const boundingClientRect = (
-    mode: 'select' | 'selectAll',
-    selector: string,
-    ctx?: any,
-    timeout?: number,
-    retryCount?: number,
-    retryDelay?: number
-    // eslint-disable-next-line max-params
-) => {
+const boundingClientRect = (mode: 'select' | 'selectAll', config: SelectBoundingClientRectConfig) => {
+    let { ctx, timeout, retryCount = 0, retryDelay = 100, selector, createSelectorQueryConfig } = config;
     let apiVar = getApiVar();
     if (typeof ctx === 'object' && 'createSelectorQuery' in ctx) {
         apiVar = ctx;
@@ -24,7 +17,7 @@ const boundingClientRect = (
         const fire = () => {
             try {
                 apiVar
-                    .createSelectorQuery()
+                    .createSelectorQuery(createSelectorQueryConfig)
                     // eslint-disable-next-line no-unexpected-multiline
                     [mode](selector)
                     .boundingClientRect()
@@ -58,25 +51,11 @@ const boundingClientRect = (
 };
 
 export const selectBoundingClientRect = <TDataSet>(
-    selector: string,
-    ctx?: any,
-    timeout?: number,
-    retryCount = 0,
-    retryDelay = 100
+    config: SelectBoundingClientRectConfig
 ): Promise<CrossMpClientRect<TDataSet>> => {
-    return boundingClientRect('select', selector, ctx, timeout, retryCount, retryDelay) as Promise<
-        CrossMpClientRect<TDataSet>
-    >;
+    return boundingClientRect('select', config) as Promise<CrossMpClientRect<TDataSet>>;
 };
 
-export const selectAllBoundingClientRect = (
-    selector: string,
-    ctx?: any,
-    timeout?: number,
-    retryCount = 0,
-    retryDelay = 100
-): Promise<CrossMpClientRect[]> => {
-    return boundingClientRect('selectAll', selector, ctx, timeout, retryCount, retryDelay) as Promise<
-        CrossMpClientRect[]
-    >;
+export const selectAllBoundingClientRect = (config: SelectBoundingClientRectConfig): Promise<CrossMpClientRect[]> => {
+    return boundingClientRect('selectAll', config) as Promise<CrossMpClientRect[]>;
 };
