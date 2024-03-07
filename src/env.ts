@@ -38,7 +38,7 @@ export const checkDebugEnabled = memoize((): boolean => {
 // eslint-disable-next-line complexity
 const getEnvInfo = memoize((): CrossMpEnvInfo => {
     let res: CrossMpEnvInfo | undefined;
-    const d = (val?: CrossMpEnvInfo): CrossMpEnvInfo => {
+    const d = (val?: Partial<CrossMpEnvInfo>): CrossMpEnvInfo => {
         if (val) {
             return (res = {
                 appId: val.appId || '?',
@@ -59,8 +59,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
         if (!res && typeof __wxConfig === 'object') {
             return d({
                 envVersion: __wxConfig.envVersion,
-                appId: __wxConfig.accountInfo?.appId || '?',
-                version: '?'
+                appId: __wxConfig.accountInfo?.appId
             });
         }
         return d(res);
@@ -78,8 +77,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
             ) {
                 return d({
                     envVersion: cfg.envVersion,
-                    appId: cfg.accountInfo?.appId || '?',
-                    version: '?'
+                    appId: cfg.accountInfo?.appId
                 });
             }
         }
@@ -93,11 +91,31 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
         if (!res && typeof __appxStartupParams === 'object') {
             return d({
                 envVersion: __appxStartupParams.envVersion || (my.isIDE ? 'develop' : '?'),
-                appId: __appxStartupParams.appId || '?',
-                version: '?'
+                appId: __appxStartupParams.appId
             });
         }
         return d(res);
+    }
+
+    if (BUILD_TARGET === 'swan') {
+        const envMap = {
+            development: 'develop',
+            trial: 'trial',
+            production: 'release'
+        };
+        if ('getEnvInfoSync' in swan) {
+            try {
+                const envInfo = swan.getEnvInfoSync();
+                return d({
+                    appId: envInfo.appKey,
+                    envVersion: envMap[envInfo.env],
+                    version: envInfo.appVersion
+                });
+            } catch (error) {
+                return d();
+            }
+        }
+        return d();
     }
 
     const apiVar = getApiVar();
