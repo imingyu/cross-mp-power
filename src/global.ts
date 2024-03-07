@@ -18,7 +18,12 @@ export const getGlobalObject = memoize(function (this: any) {
         return apiVar[key];
     }
     if (typeof getApp === 'function') {
-        const app = getApp({ allowDefault: true });
+        let app;
+        if (BUILD_TARGET === 'wx' || BUILD_TARGET === 'qq') {
+            app = getApp({ allowDefault: true });
+        } else {
+            app = getApp();
+        }
         app[key] = app[key] || {};
         return app[key];
     }
