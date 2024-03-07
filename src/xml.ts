@@ -1,11 +1,20 @@
 import type { CrossMpClientRect, SelectBoundingClientRectConfig } from './types';
-import { getApiVar } from './var';
+import { getApiVar, getApiVarName } from './var';
 
 const boundingClientRect = (mode: 'select' | 'selectAll', config: SelectBoundingClientRectConfig) => {
     let { ctx, timeout, retryCount = 0, retryDelay = 100, selector, createSelectorQueryConfig } = config;
     let apiVar = getApiVar();
     if (typeof ctx === 'object' && 'createSelectorQuery' in ctx) {
         apiVar = ctx;
+    }
+    if (
+        typeof BUILD_TARGET === 'string'
+            ? BUILD_TARGET === 'swan'
+            : getApiVarName() === 'swan' && selector.split('.').length > 2
+    ) {
+        console.warn(
+            '百度小程序平台下使用多个class选择器获取boundingClientRect时可能拿不到数据，建议换成单个class或者id选择器'
+        );
     }
     return new Promise((resolve, reject) => {
         let timer;

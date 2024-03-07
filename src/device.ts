@@ -5,7 +5,7 @@ export const setClipboardData = (data: string, showFailToast = true): Promise<vo
     return new Promise<void>((resolve, reject) => {
         let name;
         let key;
-        if (BUILD_TARGET === 'my') {
+        if (typeof BUILD_TARGET === 'string') {
             name = BUILD_TARGET === 'my' ? 'setClipboard' : 'setClipboardData';
             key = BUILD_TARGET === 'my' ? 'text' : 'data';
         } else {

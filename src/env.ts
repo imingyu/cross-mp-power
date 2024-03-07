@@ -1,6 +1,6 @@
 import { memoize } from './_util';
 import type { CrossMpEnvInfo, CrossMpEnvVersion, CrossMpSystemInfo } from './types';
-import { getApiVar } from './var';
+import { getApiVar, getApiVarName } from './var';
 
 export const getSystemInfo = (() => {
     let cache: CrossMpSystemInfo | undefined;
@@ -15,7 +15,7 @@ export const getSystemInfo = (() => {
 /** 检查当前是否开启了调试 */
 export const checkDebugEnabled = memoize((): boolean => {
     let res;
-    if (BUILD_TARGET === 'wx') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'wx' : getApiVarName() === 'wx') {
         if ('getAppBaseInfo' in wx) {
             res = wx.getAppBaseInfo()?.enableDebug;
         }
@@ -27,7 +27,7 @@ export const checkDebugEnabled = memoize((): boolean => {
         }
         return (res = res || false);
     }
-    if (BUILD_TARGET === 'qq') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'qq' : getApiVarName() === 'qq') {
         return (res =
             (typeof __wxConfig === 'object' && !!__wxConfig.debug) ||
             (typeof __qqConfig === 'object' && !!__qqConfig.debug));
@@ -52,7 +52,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
             version: '?'
         });
     };
-    if (BUILD_TARGET === 'wx') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'wx' : getApiVarName() === 'wx') {
         if ('getAccountInfoSync' in wx) {
             res = wx.getAccountInfoSync()?.miniProgram;
         }
@@ -65,7 +65,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
         return d(res);
     }
 
-    if (BUILD_TARGET === 'qq') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'qq' : getApiVarName() === 'qq') {
         if ('getAccountInfoSync' in qq) {
             res = qq.getAccountInfoSync()?.miniProgram;
         }
@@ -84,7 +84,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
         return d(res);
     }
 
-    if (BUILD_TARGET === 'my') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'my' : getApiVarName() === 'my') {
         if ('getAccountInfoSync' in my) {
             res = my.getAccountInfoSync()?.miniProgram;
         }
@@ -97,7 +97,7 @@ const getEnvInfo = memoize((): CrossMpEnvInfo => {
         return d(res);
     }
 
-    if (BUILD_TARGET === 'swan') {
+    if (typeof BUILD_TARGET === 'string' ? BUILD_TARGET === 'swan' : getApiVarName() === 'swan') {
         const envMap = {
             development: 'develop',
             trial: 'trial',

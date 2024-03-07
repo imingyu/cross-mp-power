@@ -1,5 +1,5 @@
 import { memoize } from './_util';
-import { getApiVar } from './var';
+import { getApiVar, getApiVarName } from './var';
 
 export const getGlobalObject = memoize(function (this: any) {
     if (typeof global === 'object' && global) {
@@ -19,7 +19,13 @@ export const getGlobalObject = memoize(function (this: any) {
     }
     if (typeof getApp === 'function') {
         let app;
-        if (BUILD_TARGET === 'wx' || BUILD_TARGET === 'qq') {
+        let hasArg;
+        if (typeof BUILD_TARGET === 'string') {
+            hasArg = BUILD_TARGET === 'wx' || BUILD_TARGET === 'qq';
+        } else {
+            hasArg = getApiVarName() === 'wx' || getApiVarName() === 'qq';
+        }
+        if (hasArg) {
             app = getApp({ allowDefault: true });
         } else {
             app = getApp();
